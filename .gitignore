@@ -1,0 +1,34 @@
+# ---------------------------------------------------------------------
+# NADA DE DADO REAL NESTE REPOSITÓRIO.
+#
+# A automação baixa documentos financeiros reais (Despesa Certificada,
+# Nota de Lançamento, Preparação de Pagamento, Ordem Bancária) e grava
+# uma sessão com números de processo, valores e caminhos de arquivo que
+# contêm o login do Windows de quem rodou. Nada disso pode ir pro Git.
+# ---------------------------------------------------------------------
+
+# Sessão: processo, OB, valores e caminhos absolutos da máquina
+sessao_atual.json
+
+# Pastas de processo criadas pela automação (0029.001947.2026-67/ etc.),
+# com os JPGs dos documentos baixados
+[0-9][0-9][0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9].*/
+
+# PDFs temporários, caso a automação pare no meio de um download
+temp_*.pdf
+
+# Backups locais
+_backup*/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Editores e sistema
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
