@@ -10,7 +10,7 @@
 # Sessão: processo, OB, valores e caminhos absolutos da máquina
 sessao_atual.json
 
-# Pastas de processo criadas pela automação (0029.001947.2026-67/ etc.),
+# Pastas de processo criadas pela automação (0000.000000.2026-00/ etc.),
 # com os JPGs dos documentos baixados
 [0-9][0-9][0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9].*/
 
