@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automação SIGEF → SEI</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- Ícones usados na página (referenciados com <use href="#i-...">) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-seta" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pasta" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 014.5 6h4.3l2 2h8.7A1.5 1.5 0 0121 9.5v8A1.5 1.5 0 0119.5 19h-15A1.5 1.5 0 013 17.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alerta" viewBox="0 0 24 24"><path d="M12 3.5L22 20H2z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8.6h8.4M9 13.7L4.9 6.5M15 13.7l-4.3 7.3" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-voltar" viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-planilha" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 9h16M4 15h16M10 9v12" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-registro" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- ============================== Barra lateral ============================== -->
+  <aside class="lateral">
+    <div class="marca">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <rect x="4" y="9" width="15" height="20" rx="2.5" fill="#fff" opacity=".95"/>
+          <rect x="29" y="19" width="15" height="20" rx="2.5" fill="#fff" opacity=".95"/>
+          <path d="M16 36c6 4 14 3 18-2" fill="none" stroke="#3DDC97" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M30.5 30.5l3.9 3.4-4.4 2.8" fill="none" stroke="#3DDC97" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="marca-nome">SIGEF <span>→</span> SEI</div>
+        <div class="marca-sub">Automação de documentos</div>
+      </div>
+    </div>
+
+    <ol class="passos" id="passos">
+      <li data-passo="inicio"><span class="bolha">1</span><span>Início</span></li>
+      <li data-passo="login"><span class="bolha">2</span><span>Entrar nos sistemas</span></li>
+      <li data-passo="dados"><span class="bolha">3</span><span>Processo e OB</span></li>
+      <li data-passo="execucao"><span class="bolha">4</span><span>Baixar e anexar</span></li>
+      <li data-passo="conferencia"><span class="bolha">5</span><span>Conferência</span></li>
+    </ol>
+
+    <div class="lateral-rodape">
+      <div class="contador" id="contador" hidden>
+        <strong id="contador-num">0</strong>
+        <span>processo(s) concluído(s) nesta sessão</span>
+      </div>
+      <button class="link-pasta" id="btn-pasta-lateral" type="button" title="Abrir a pasta dos documentos baixados">
+        <svg class="ic"><use href="#i-pasta"/></svg>
+        <span>Pasta dos documentos</span>
+      </button>
+      <div class="versao" id="versao">versão —</div>
+    </div>
+  </aside>
+
+  <!-- ============================== Conteúdo ============================== -->
+  <main class="conteudo">
+
+    <!-- ---------- 1. Início ---------- -->
+    <section class="tela" id="tela-inicio">
+      <header class="cabeca">
+        <p class="sobre">Passo 1 de 5</p>
+        <h1>Baixe do SIGEF e anexe no SEI, a partir de uma Ordem Bancária</h1>
+        <p class="lead">Informe o processo e a OB. O programa localiza a Despesa Certificada, as Notas de Lançamento, as Preparações de Pagamento e a Ordem Bancária, baixa cada uma e inclui no processo do SEI.</p>
+      </header>
+
+      <div class="docs">
+        <div class="doc"><b>CE</b><span>Despesa Certificada</span></div>
+        <div class="doc"><b>NL</b><span>Nota de Lançamento</span></div>
+        <div class="doc"><b>PP</b><span>Preparação de Pagamento</span></div>
+        <div class="doc"><b>OB</b><span>Ordem Bancária</span></div>
+      </div>
+
+      <div class="grade2">
+        <div class="cartao">
+          <h3><svg class="ic ok"><use href="#i-check"/></svg>O que o programa faz</h3>
+          <ul class="lista">
+            <li><b>Consulta</b> a OB no SIGEF e as PPs vinculadas a ela</li>
+            <li><b>Baixa</b> os relatórios em imagem, numa pasta com o número do processo</li>
+            <li><b>Anexa</b> no SEI com nível de acesso Restrito e hipótese legal “Documento Preparatório”</li>
+          </ul>
+        </div>
+        <div class="cartao">
+          <h3><svg class="ic nao"><use href="#i-x"/></svg>O que ele não faz</h3>
+          <ul class="lista">
+            <li><b>Não gera, não altera e não exclui</b> nenhum documento</li>
+            <li>CE, NL, PP e OB precisam <b>já existir</b> no SIGEF</li>
+            <li>Nenhum lançamento é feito no SIGEF</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acao">
+        <button class="btn primario grande" id="btn-comecar" type="button">
+          <svg class="ic"><use href="#i-chrome"/></svg>
+          Abrir o navegador da automação
+        </button>
+        <p class="nota">Abre uma janela <b>nova</b> do Google Chrome, separada da sua. Nada do seu navegador pessoal é fechado ou alterado.</p>
+      </div>
+    </section>
+
+    <!-- ---------- 2. Login ---------- -->
+    <section class="tela" id="tela-login" hidden>
+      <header class="cabeca">
+        <p class="sobre">Passo 2 de 5</p>
+        <h1>Entre na sua conta no navegador que abriu</h1>
+        <p class="lead">Uma janela nova do Chrome abriu com duas abas, <b>SIGEF</b> e <b>SEI</b>. Faça o login nas duas e confirme abaixo. Não há pressa: o programa espera.</p>
+      </header>
+
+      <div class="carregando" id="login-carregando">
+        <div class="giro" aria-hidden="true"></div>
+        <div>
+          <strong>Abrindo o navegador da automação…</strong>
+          <span id="login-status">Isso leva alguns segundos.</span>
+        </div>
+      </div>
+
+      <div id="login-pronto" hidden>
+        <div class="checagem">
+          <label class="item">
+            <input type="checkbox" class="chk-login">
+            <span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span>
+            <span class="texto"><b>Entrei no SIGEF</b><small>Na aba do SIGEF, com meu usuário e senha. Depois do login ele abre a página inicial — isso é normal.</small></span>
+          </label>
+          <label class="item">
+            <input type="checkbox" class="chk-login">
+            <span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span>
+            <span class="texto"><b>Entrei no SEI</b><small>Cliquei na outra aba e entrei também.</small></span>
+          </label>
+          <label class="item destaque">
+            <input type="checkbox" class="chk-login">
+            <span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span>
+            <span class="texto"><b>Conferi a minha gerência no SEI</b><small>Ela aparece no alto da tela, à direita, perto do seu nome. Os documentos entram na gerência que estiver selecionada — se estiver errada, troque antes de continuar.</small></span>
+          </label>
+        </div>
+
+        <p class="nota aviso-nota"><svg class="ic"><use href="#i-alerta"/></svg>Não feche as abas nem a janela do Chrome da automação.</p>
+
+        <div class="acao linha">
+          <button class="btn primario grande" id="btn-login-ok" type="button" disabled>
+            Continuar <svg class="ic"><use href="#i-seta"/></svg>
+          </button>
+          <button class="btn fantasma" id="btn-reabrir" type="button">Não vejo o navegador — abrir de novo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 3. Dados ---------- -->
+    <section class="tela" id="tela-dados" hidden>
+      <header class="cabeca">
+        <p class="sobre" id="dados-sobre">Passo 3 de 5</p>
+        <h1 id="dados-titulo">Informe o processo e a Ordem Bancária</h1>
+        <p class="lead" id="dados-lead">A pontuação é opcional: digite só os números, se preferir, que o programa formata.</p>
+      </header>
+
+      <div class="abas" role="tablist">
+        <button class="aba ativa" type="button" role="tab" id="aba-um" aria-selected="true">Um processo</button>
+        <button class="aba" type="button" role="tab" id="aba-lote" aria-selected="false">
+          <svg class="ic"><use href="#i-planilha"/></svg>Vários processos <span class="aba-sub">planilha ou lista</span>
+        </button>
+      </div>
+
+      <form class="formulario" id="form-dados" autocomplete="off" novalidate>
+        <div class="campo" id="campo-processo">
+          <label for="in-processo">Número do processo no SEI</label>
+          <input id="in-processo" inputmode="numeric" placeholder="0029.001947/2026-67" spellcheck="false">
+          <div class="dica">
+            <span id="dica-processo">Onde anexar os documentos. Exemplo: <code>0029.001947/2026-67</code> ou <code>0029001947202667</code></span>
+          </div>
+        </div>
+
+        <div class="campo" id="campo-ob">
+          <label for="in-ob">Número da Ordem Bancária (OB)</label>
+          <input id="in-ob" placeholder="2026OB136475" spellcheck="false">
+          <div class="dica">
+            <span id="dica-ob">Cujos documentos serão baixados. Exemplo: <code>2026OB136475</code> ou só <code>136475</code></span>
+          </div>
+        </div>
+
+        <fieldset class="campo" id="campo-tipo">
+          <legend>Como a OB entra no SEI</legend>
+          <div class="opcoes-tipo">
+            <label class="opcao">
+              <input type="radio" name="tipo-ob" value="regularizacao">
+              <span class="radio"></span>
+              <span class="texto"><b data-tipo-nome="regularizacao">OB - Ordem Bancária de Regularização</b><small>O tipo usado até aqui</small></span>
+            </label>
+            <label class="opcao">
+              <input type="radio" name="tipo-ob" value="ordem_bancaria">
+              <span class="radio"></span>
+              <span class="texto"><b data-tipo-nome="ordem_bancaria">OB - Ordem Bancária</b><small>Para os processos que pedem este tipo</small></span>
+            </label>
+          </div>
+          <div class="dica">Depende do processo. O programa lembra a última escolha.</div>
+        </fieldset>
+
+        <div class="acao linha">
+          <button class="btn primario grande" id="btn-processar" type="submit">
+            Baixar e anexar <svg class="ic"><use href="#i-seta"/></svg>
+          </button>
+          <span class="nota">Se o número não servir, o programa avisa e você corrige.</span>
+        </div>
+      </form>
+
+      <div class="formulario" id="form-lote" hidden>
+        <div class="lote-fonte">
+          <button class="btn fantasma" id="btn-planilha" type="button"><svg class="ic"><use href="#i-planilha"/></svg>Escolher planilha (.xlsx ou .csv)</button>
+          <span class="lote-arquivo" id="lote-arquivo"></span>
+        </div>
+
+        <div class="campo">
+          <label for="in-lista">…ou cole a lista aqui</label>
+          <textarea id="in-lista" rows="6" spellcheck="false" placeholder="0029.001947/2026-67    2026OB136475    Regularização&#10;0029.001948/2026-11    136476          Ordem Bancária"></textarea>
+          <div class="dica">Uma OB por linha: o processo, a OB e, se quiser, o tipo (<code>Regularização</code> ou <code>Ordem Bancária</code>). Pode colar direto do Excel; a ordem das colunas e o cabeçalho não importam.</div>
+        </div>
+
+        <fieldset class="campo" id="campo-tipo-lote">
+          <legend>Tipo da OB nas linhas que não dizem o tipo</legend>
+          <div class="opcoes-tipo">
+            <label class="opcao">
+              <input type="radio" name="tipo-lote" value="regularizacao">
+              <span class="radio"></span>
+              <span class="texto"><b data-tipo-nome="regularizacao">OB - Ordem Bancária de Regularização</b><small>Para as linhas sem tipo</small></span>
+            </label>
+            <label class="opcao">
+              <input type="radio" name="tipo-lote" value="ordem_bancaria">
+              <span class="radio"></span>
+              <span class="texto"><b data-tipo-nome="ordem_bancaria">OB - Ordem Bancária</b><small>Para as linhas sem tipo</small></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="previa" id="lote-previa" hidden>
+          <div class="previa-cab">
+            <h3><svg class="ic"><use href="#i-doc"/></svg>Conferência da lista</h3>
+            <span class="nota" id="lote-contagem"></span>
+          </div>
+          <div class="previa-rolagem">
+            <table>
+              <thead><tr><th>Linha</th><th>Processo</th><th>OB</th><th>Tipo</th><th>Situação</th></tr></thead>
+              <tbody id="lote-linhas"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="erro-leitura" id="lote-erro-leitura" hidden></p>
+
+        <div class="acao linha">
+          <button class="btn primario grande" id="btn-lote" type="button" disabled>
+            <span id="btn-lote-txt">Processar a lista</span> <svg class="ic"><use href="#i-seta"/></svg>
+          </button>
+          <span class="nota">Um processo depois do outro, sem parar. A conferência é uma só, no fim.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 4. Execução ---------- -->
+    <section class="tela" id="tela-execucao" hidden>
+      <header class="cabeca">
+        <p class="sobre" id="exec-sobre">Passo 4 de 5</p>
+        <h1>Trabalhando no processo <span class="mono" id="exec-processo">—</span></h1>
+        <p class="lead">OB <span class="mono" id="exec-ob">—</span>, que entra no SEI como <b id="exec-tipo">—</b>. Deixe o Chrome da automação aberto e evite clicar nele até o fim.</p>
+      </header>
+
+      <div class="fases">
+        <div class="fase" data-fase="sigef">
+          <div class="fase-ic"><span class="num">1</span><svg class="ic"><use href="#i-check"/></svg></div>
+          <div class="fase-txt"><b>Baixar do SIGEF</b><small id="fase-sigef-det">Aguardando</small></div>
+        </div>
+        <div class="fase-linha"></div>
+        <div class="fase" data-fase="sei">
+          <div class="fase-ic"><span class="num">2</span><svg class="ic"><use href="#i-check"/></svg></div>
+          <div class="fase-txt"><b>Anexar no SEI</b><small id="fase-sei-det">Aguardando</small></div>
+        </div>
+        <div class="fase-linha"></div>
+        <div class="fase" data-fase="conf">
+          <div class="fase-ic"><span class="num">3</span><svg class="ic"><use href="#i-check"/></svg></div>
+          <div class="fase-txt"><b>Conferir</b><small>Com você</small></div>
+        </div>
+      </div>
+
+      <div class="barra" aria-hidden="true"><div class="barra-cheia" id="barra"></div></div>
+      <p class="agora" id="agora">Preparando…</p>
+
+      <div class="erro" id="erro" hidden>
+        <div class="erro-cab"><svg class="ic"><use href="#i-alerta"/></svg><strong>A automação parou</strong></div>
+        <pre id="erro-msg"></pre>
+        <p class="retomar-nota" id="erro-retomar"></p>
+        <div class="acao linha">
+          <button class="btn primario" id="btn-erro-continuar" type="button">Continuar de onde parou <svg class="ic"><use href="#i-seta"/></svg></button>
+          <button class="btn fantasma" id="btn-erro-voltar" type="button"><svg class="ic"><use href="#i-voltar"/></svg>Corrigir os números</button>
+          <button class="btn fantasma" id="btn-erro-pasta" type="button"><svg class="ic"><use href="#i-pasta"/></svg>Abrir pasta</button>
+        </div>
+      </div>
+
+      <div class="resumo" id="resumo" hidden></div>
+
+      <div class="lote-andamento" id="lote-andamento" hidden>
+        <div class="previa-cab">
+          <h3><svg class="ic"><use href="#i-planilha"/></svg>Lote <span id="lote-and-cont"></span></h3>
+          <button class="btn fantasma pequeno" id="btn-parar-lote" type="button">Parar depois deste processo</button>
+        </div>
+        <ol class="lote-itens" id="lote-itens"></ol>
+      </div>
+    </section>
+
+    <!-- ---------- Fim do lote ---------- -->
+    <section class="tela" id="tela-lote-fim" hidden>
+      <header class="cabeca">
+        <p class="sobre">Lote concluído</p>
+        <h1 id="lotefim-titulo">Lote concluído</h1>
+        <p class="lead" id="lotefim-lead"></p>
+      </header>
+
+      <div class="contadores" id="lotefim-contadores"></div>
+
+      <div class="alerta-grande">
+        <svg class="ic"><use href="#i-alerta"/></svg>
+        <div>
+          <strong>Conferência obrigatória — em cada processo abaixo</strong>
+          <p>Antes de salvar, ordenar ou assinar, confira no SEI: se todos os documentos foram incluídos, se estão na ordem correta, se é o processo certo e se é a gerência (unidade) correta. A automação apenas transporta os documentos; a conferência e a assinatura são de responsabilidade exclusiva de quem opera.</p>
+        </div>
+      </div>
+
+      <div class="previa">
+        <div class="previa-rolagem alta">
+          <table>
+            <thead><tr><th>Linha</th><th>Processo</th><th>OB</th><th>Situação</th></tr></thead>
+            <tbody id="lotefim-linhas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="acao linha">
+        <button class="btn primario" id="btn-lote-refazer" type="button" hidden>Tentar de novo os que deram erro <svg class="ic"><use href="#i-seta"/></svg></button>
+        <button class="btn fantasma" id="btn-lote-relatorio" type="button"><svg class="ic"><use href="#i-planilha"/></svg>Abrir relatório (.csv)</button>
+        <button class="btn fantasma" id="btn-lote-novo" type="button">Novo lote</button>
+        <button class="btn fantasma" id="btn-lote-sair" type="button">Encerrar</button>
+      </div>
+    </section>
+
+    <!-- ---------- 5. Conferência ---------- -->
+    <section class="tela" id="tela-conferencia" hidden>
+      <header class="cabeca">
+        <p class="sobre">Passo 5 de 5</p>
+        <h1>Confira os documentos no SEI</h1>
+        <p class="lead">Os documentos foram incluídos no processo <span class="mono" id="conf-processo">—</span>. Antes de salvar, ordenar ou assinar, confira na tela do SEI:</p>
+      </header>
+
+      <div class="alerta-grande">
+        <svg class="ic"><use href="#i-alerta"/></svg>
+        <div>
+          <strong>Conferência obrigatória</strong>
+          <p>Esta automação apenas transporta para o SEI os documentos obtidos no SIGEF. A conferência, a ordenação e a assinatura são de responsabilidade exclusiva de quem opera. O sistema não se responsabiliza por assinaturas indevidas, nem por documentos incluídos em processo ou gerência incorretos.</p>
+        </div>
+      </div>
+
+      <div class="pendencias" id="conf-avisos" hidden>
+        <strong>Atenção — resolva antes de assinar:</strong>
+        <ul id="conf-avisos-lista"></ul>
+      </div>
+
+      <div class="checagem">
+        <label class="item"><input type="checkbox" class="chk-conf"><span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span><span class="texto"><b>Todos os documentos esperados foram incluídos</b></span></label>
+        <label class="item"><input type="checkbox" class="chk-conf"><span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span><span class="texto"><b>Estão na ordem correta</b></span></label>
+        <label class="item"><input type="checkbox" class="chk-conf"><span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span><span class="texto"><b>É o processo certo</b></span></label>
+        <label class="item"><input type="checkbox" class="chk-conf"><span class="caixa"><svg class="ic"><use href="#i-check"/></svg></span><span class="texto"><b>É a gerência (unidade) correta</b></span></label>
+      </div>
+
+      <div class="acao linha">
+        <button class="btn primario grande" id="btn-conf-ok" type="button" disabled>
+          <svg class="ic"><use href="#i-check"/></svg> Concluí a conferência
+        </button>
+        <span class="nota">Pode ordenar, assinar ou incluir em bloco no SEI antes de clicar.</span>
+      </div>
+    </section>
+
+    <!-- ---------- Concluído ---------- -->
+    <section class="tela" id="tela-concluido" hidden>
+      <div class="sucesso">
+        <div class="sucesso-ic"><svg class="ic"><use href="#i-check"/></svg></div>
+        <h1>Processo <span class="mono" id="fim-processo">—</span> concluído</h1>
+        <p class="lead">Você continua logado. Para outra OB, não precisa entrar de novo no SIGEF nem no SEI.</p>
+        <div class="acao linha centro">
+          <button class="btn primario grande" id="btn-outra" type="button">Processar outra Ordem Bancária <svg class="ic"><use href="#i-seta"/></svg></button>
+          <button class="btn fantasma" id="btn-fim-pasta" type="button"><svg class="ic"><use href="#i-pasta"/></svg>Abrir pasta do processo</button>
+          <button class="btn fantasma" id="btn-sair" type="button">Encerrar</button>
+        </div>
+        <p class="nota">Ao encerrar, o Chrome da automação continua aberto — feche quando quiser.</p>
+      </div>
+    </section>
+
+    <!-- ---------- Registro (log) ---------- -->
+    <details class="registro" id="registro">
+      <summary><svg class="ic"><use href="#i-registro"/></svg>Registro detalhado <span class="qtd" id="registro-qtd"></span></summary>
+      <pre id="registro-txt"></pre>
+    </details>
+  </main>
+</div>
+
+<!-- Pergunta genérica (qualquer input() que as etapas façam) -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="modal-texto">
+    <pre id="modal-texto"></pre>
+    <input id="modal-resp" placeholder="Sua resposta (ou deixe em branco)">
+    <div class="acao linha fim">
+      <button class="btn primario" id="modal-ok" type="button">Responder</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

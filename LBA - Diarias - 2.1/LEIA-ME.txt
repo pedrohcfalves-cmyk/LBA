@@ -1,0 +1,312 @@
+==================================================================
+  COMO USAR ESTA AUTOMACAO  -  passo a passo
+==================================================================
+
+------------------------------------------------------------------
+  O QUE ESTE PROGRAMA FAZ
+------------------------------------------------------------------
+
+  A partir do numero de UMA Ordem Bancaria (OB), o programa
+  localiza no SIGEF os documentos vinculados a ela, baixa cada um
+  em imagem e os anexa ao processo indicado no SEI.
+
+  Sao quatro tipos de documento:
+
+     CE  -  Despesa Certificada
+     NL  -  Nota de Lancamento
+     PP  -  Preparacao de Pagamento
+     OB  -  Ordem Bancaria
+
+  O trabalho e executado em duas etapas, nesta ordem:
+
+     1. No SIGEF: localiza a Ordem Bancaria, identifica as
+        Preparacoes de Pagamento vinculadas a ela e emite os
+        relatorios de cada documento, salvando-os em uma pasta
+        com o numero do processo.
+
+     2. No SEI: abre o processo informado e inclui os documentos
+        baixados, com Nivel de Acesso Restrito e hipotese legal
+        "Documento Preparatorio".
+
+------------------------------------------------------------------
+  O QUE ESTE PROGRAMA NAO FAZ
+------------------------------------------------------------------
+
+  O programa NAO gera, NAO cria, NAO altera e NAO exclui nenhum
+  documento. A CE, a NL, a PP e a OB precisam JA EXISTIR no SIGEF
+  antes de voce executa-lo.
+
+  A funcao dele e apenas CONSULTAR, BAIXAR e ANEXAR.
+  Nenhum lancamento e feito no SIGEF.
+
+------------------------------------------------------------------
+  PARA COMECAR
+------------------------------------------------------------------
+
+  1) De DOIS CLIQUES no arquivo   AUTOMACAO SIGEF-SEI
+     (e o arquivo com o desenho de dois papeis e uma seta
+      verde entre eles)
+
+  2) Vai abrir uma JANELA PRETA. Nao feche ela.
+     E por ela que o programa fala com voce.
+
+  3) NA PRIMEIRA VEZ, ele para uns 2 minutos preparando as
+     coisas: baixa sozinho o que precisa pra funcionar e vai
+     mostrando o andamento. Deixe ele terminar.
+
+     Da segunda vez em diante isso nao acontece mais: ele vai
+     direto pro trabalho, em 2 ou 3 segundos.
+
+  OBSERVACAO: o arquivo INICIAR.bat continua na pasta e continua
+  funcionando. A diferenca e que ele exige o Python ja instalado
+  e as bibliotecas ja baixadas; o AUTOMACAO SIGEF-SEI resolve
+  isso sozinho. Na duvida, use o AUTOMACAO SIGEF-SEI.
+
+------------------------------------------------------------------
+  PASSO 1 de 2  -  ENTRAR NA SUA CONTA
+------------------------------------------------------------------
+
+  O programa abre SOZINHO uma janela NOVA do Google Chrome, com
+  duas abas: o SIGEF e o SEI.
+
+  ATENCAO: essa janela nova e SEPARADA do seu Chrome de sempre.
+  Nada do seu navegador pessoal e fechado ou alterado.
+
+  Voce faz so isto:
+
+     a) Na aba do SIGEF, digite seu usuario e senha e entre.
+     b) Clique na aba do SEI e entre nela tambem.
+     c) AINDA NO SEI, confira a sua GERENCIA (a unidade). Ela
+        aparece no alto da tela, do lado direito, perto do seu
+        nome. Se estiver errada, clique nela e troque para a
+        correta ANTES de continuar -- os documentos entram na
+        gerencia que estiver selecionada nessa hora.
+     d) NAO feche essas abas.
+     e) Volte na janela preta, digite a letra S e aperte ENTER.
+
+  IMPORTANTE: depois que voce entra, cada sistema abre a PAGINA
+  INICIAL dele. Isso e normal e esta certo. Nao precisa procurar
+  nem clicar em mais nada -- pode deixar do jeito que ficou.
+
+  O programa NAO adivinha se voce entrou: quem diz isso e voce,
+  digitando a letra S. Enquanto voce nao responder, ele fica
+  esperando, sem pressa nenhuma.
+
+  Se digitar N, ele mostra o passo a passo de novo.
+  Se digitar SAIR, ele fecha sem fazer nada.
+
+  DICA: na proxima vez, o Chrome costuma lembrar do seu login e
+  esse passo fica bem mais rapido.
+
+------------------------------------------------------------------
+  PASSO 2 de 2  -  INFORMAR O PROCESSO E A OB
+------------------------------------------------------------------
+
+  O programa pergunta tres coisas, uma de cada vez:
+
+     1. O numero do processo do SEI
+        no formato 0029.001947/2026-67
+
+        Voce NAO precisa digitar ponto, barra nem traco: pode
+        bater so os 16 numeros (0029001947202667) que o programa
+        coloca a pontuacao sozinho.
+
+     2. O numero da Ordem Bancaria (OB)
+
+     3. Como a OB entra no SEI -- depende do processo:
+           1 = OB - Ordem Bancaria de Regularizacao
+           2 = OB - Ordem Bancaria
+        O programa lembra a ultima escolha.
+
+  Digite e aperte ENTER em cada uma.
+
+  Se aparecer algo entre colchetes [ ], e o valor que voce usou da
+  ultima vez: se for o mesmo, basta apertar ENTER.
+
+  Dai em diante e so esperar. O programa baixa tudo, cria a pasta
+  do processo e anexa os documentos no SEI sozinho.
+
+------------------------------------------------------------------
+  TEM MAIS DE UMA OB? NAO PRECISA COMECAR DE NOVO
+------------------------------------------------------------------
+
+  Quando terminar um processo, o programa pergunta:
+
+     >>> QUER PROCESSAR OUTRA ORDEM BANCARIA?
+            S = Sim.  N = Nao, encerrar.
+
+  Respondendo S, ele volta e pede o processo e a OB seguintes.
+  Voce NAO precisa entrar de novo no SIGEF nem no SEI: o login
+  continua valendo e o Chrome nao e fechado.
+
+  Assim da pra resolver varios processos de uma sentada, fazendo
+  o login uma unica vez, no comeco.
+
+------------------------------------------------------------------
+  MUITAS OBs? USE UMA PLANILHA OU UMA LISTA (MODO LOTE)
+------------------------------------------------------------------
+
+  Na tela "Processo e OB", clique em  Varios processos  e:
+
+     - escolha uma planilha (.xlsx ou .csv), ou
+     - cole a lista (pode copiar direto do Excel).
+
+  Uma OB por linha: o numero do processo, o numero da OB e, se
+  quiser, o tipo (Regularizacao ou Ordem Bancaria). A ordem das
+  colunas nao importa e o cabecalho e ignorado. Exemplo:
+
+     Processo              OB              Tipo
+     0029.001947/2026-67   2026OB136475    Regularizacao
+     0029001948202611      136476          Ordem Bancaria
+
+  Linhas sem tipo usam o tipo escolhido na tela.
+
+  Antes de comecar, o programa mostra o que entendeu de cada
+  linha. Linha com problema (sem processo, sem OB, repetida) fica
+  de fora e aparece em vermelho. OB que ja foi anexada numa
+  rodada anterior e anexada DE NOVO (documentos de teste costumam
+  ser excluidos depois) -- a tela de conferencia avisa, para voce
+  conferir e excluir o que ficar em dobro.
+
+  Depois e so esperar: ele faz um processo depois do outro, sem
+  parar. Se um der erro (internet), ele espera 30 segundos e
+  tenta de novo, de onde parou; se ainda assim nao der, marca o
+  erro e segue para o proximo.
+
+  No fim aparece a lista do que foi feito, com o botao "Tentar de
+  novo os que deram erro". Um relatorio .csv fica na pasta
+  "lotes", dentro da pasta dos documentos.
+
+  A CONFERENCIA CONTINUA OBRIGATORIA, em cada processo, antes de
+  assinar.
+
+  Na tela preta: arraste a planilha sobre o INICIAR.bat, ou rode
+  python main.py lista.xlsx
+
+------------------------------------------------------------------
+  AVISO IMPORTANTE  -  CONFERENCIA OBRIGATORIA
+------------------------------------------------------------------
+
+  Ao final, o programa para e mostra este aviso na tela.
+
+  Antes de salvar, ordenar os documentos na arvore do processo
+  ou inclui-los em bloco de assinatura, e INDISPENSAVEL que o
+  usuario confira:
+
+     * se todos os documentos esperados foram incluidos;
+     * se estao na ordem correta;
+     * se o processo e o processo certo;
+     * se a gerencia (unidade) e a gerencia correta.
+
+  Esta automacao apenas transporta para o SEI os documentos
+  obtidos no SIGEF. A conferencia, a ordenacao e a assinatura
+  sao de responsabilidade exclusiva do usuario.
+
+  O sistema nao se responsabiliza por assinaturas indevidas, por
+  documentos incluidos em processo ou gerencia incorretos, nem
+  por qualquer consequencia decorrente da ausencia dessa
+  conferencia.
+
+------------------------------------------------------------------
+  SE DER ALGUM PROBLEMA
+------------------------------------------------------------------
+
+  * A internet caiu no meio (erro de "Timeout", principalmente na
+      hora de colar o documento no SEI):
+      NAO precisa comecar do zero. Primeiro o programa tenta
+      sozinho mais 2 vezes no mesmo documento. Se mesmo assim nao
+      der, espere a internet voltar e clique em "Continuar de onde
+      parou" (na tela preta: responda S). Ele NAO baixa de novo do
+      SIGEF e pula os documentos que ja foram anexados.
+      Se sobrar no SEI um documento vazio da tentativa que caiu, o
+      programa avisa na tela de conferencia -- exclua esse vazio.
+
+  * A automacao parou logo no comeco dizendo que nao achou algo
+      na tela do SIGEF ou do SEI:
+      quase sempre e login. Voce respondeu S sem ter entrado, ou
+      entrou no Chrome ERRADO -- tem que ser a janela NOVA que o
+      programa abriu, nao a que ja estava aberta antes.
+      Feche tudo e comece de novo.
+
+  * "Nao consegui abrir o navegador da automacao"
+      Feche TODAS as janelas do Google Chrome e comece de novo.
+
+  * "Este computador nao tem o Python instalado"
+      Responda S: o proprio programa baixa uma copia pra dentro
+      da pasta, sem precisar de senha de administrador.
+      Se voce preferir instalar do jeito normal, pegue em
+      https://www.python.org/downloads/ e MARQUE a caixinha
+      "Add Python to PATH" durante a instalacao.
+
+  * "Nao consegui instalar as bibliotecas"
+      E a internet do orgao barrando o download. Confira se o
+      computador esta com internet e, se a rede usa proxy, peca
+      o endereco dele ao setor de informatica -- a propria tela
+      mostra o que fazer com esse endereco.
+
+  * O programa reclama de biblioteca faltando ("No module named")
+      Feche e abra de novo: ele reinstala o que faltar.
+      Se insistir, abra um prompt nesta pasta e rode:
+
+          "AUTOMACAO SIGEF-SEI.exe" reinstalar
+
+      que ele refaz a instalacao do zero.
+
+  * Qualquer outra mensagem vermelha:
+      tire uma foto da tela preta inteira antes de fechar.
+
+------------------------------------------------------------------
+  PARA QUEM MEXE NO CODIGO
+------------------------------------------------------------------
+
+  ARQUIVOS
+
+    AUTOMACAO SIGEF-SEI.exe . duplo clique: prepara o Python,
+                              instala as bibliotecas e roda o
+                              main.py. E a porta de entrada
+    INICIAR.bat ............. atalho antigo: roda o main.py
+                              direto, sem preparar nada
+    lancador/ ............... o codigo-fonte do .exe (C) e o
+                              COMPILAR.md, com o passo a passo
+                              pra gerar o executavel de novo
+    requirements.txt ........ bibliotecas necessarias
+    main.py ................. PONTO DE ENTRADA. Menus, perguntas e
+                              a ordem das etapas
+    preparar_navegador.py ... passo 0: abre o Chrome em modo de
+                              depuracao, abre SIGEF e SEI, avisa e
+                              espera o usuario confirmar o login
+    etapa_listar_baixar.py .. baixa os documentos do SIGEF
+                              (funcao baixar_documentos)
+    etapa_sei2.py ........... anexa os documentos no SEI
+                              (funcao executar_sei2)
+    sessao_atual.json ....... ultimo processo/OB e o que foi baixado
+
+  INSTALACAO (uma vez so, num prompt dentro desta pasta)
+
+      python -m pip install -r requirements.txt
+
+    Ou duplo clique no AUTOMACAO SIGEF-SEI, que faz isso sozinho
+    e ainda baixa o Python se nao houver nenhum na maquina.
+
+    Nao e preciso "playwright install": a automacao se conecta ao
+    Chrome ja instalado na maquina, e nao a um navegador proprio.
+
+  RODAR
+
+      python main.py          (ou duplo clique no
+                               AUTOMACAO SIGEF-SEI)
+
+  RODAR SO UMA PARTE
+
+      python preparar_navegador.py   testa o navegador e o login,
+                                     sem baixar nada
+      python etapa_sei2.py           anexa um processo ja baixado,
+                                     sem repetir o download
+
+  VERSAO
+
+    A constante VERSAO, no comeco do main.py, e impressa na tela a
+    cada rodada. Suba o numero a cada mudanca de comportamento: se
+    a tela mostrar uma versao diferente da esperada, e copia velha
+    rodando, nao defeito.
+==================================================================

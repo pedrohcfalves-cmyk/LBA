@@ -1,0 +1,15 @@
+# Dependências da automação SIGEF -> SEI.
+#
+# Instalar (uma vez só, num prompt de comando dentro desta pasta):
+#
+#     python -m pip install -r requirements.txt
+#
+# Não é preciso rodar "playwright install": a automação se conecta ao
+# Google Chrome que já está instalado na máquina, em modo de depuração,
+# em vez de usar um navegador próprio do Playwright.
+
+playwright>=1.44        # controla o Chrome (conexão CDP)
+pymupdf>=1.24           # converte os PDFs do SIGEF em JPG
+pillow>=10.0            # trata as imagens antes de anexar no SEI
+pywebview>=5.0          # a janela do programa (app_janela.py)
+openpyxl>=3.1            # lê as planilhas do modo lote (lote.py)

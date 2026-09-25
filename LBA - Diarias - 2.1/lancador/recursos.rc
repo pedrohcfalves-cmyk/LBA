@@ -1,0 +1,33 @@
+#include <winver.h>
+
+1 ICON "icone.ico"
+1 24 "manifesto.xml"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+FILEFLAGSMASK   0x3fL
+FILEFLAGS       0x0L
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041604b0"
+        BEGIN
+            VALUE "CompanyName",      "Automacao SIGEF-SEI"
+            VALUE "FileDescription",  "Automacao SIGEF -> SEI (lancador)"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "lancador"
+            VALUE "OriginalFilename", "AUTOMACAO SIGEF-SEI.exe"
+            VALUE "ProductName",      "Automacao SIGEF -> SEI"
+            VALUE "ProductVersion",   "1.0.0.0"
+            VALUE "Comments",         "Prepara o Python, instala as bibliotecas e roda o main.py"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x416, 1200
+    END
+END
